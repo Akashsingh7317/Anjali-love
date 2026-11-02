@@ -267,6 +267,11 @@ footer{text-align:center;padding:30px;color:rgba(255,255,255,.4);font-size:13px}
   .avatar{width:88px;height:88px}
   .bubble{max-width:calc(100vw - 126px);font-size:13px;padding:12px 26px 10px 12px}
   .moon{width:56px;height:56px;box-shadow:inset -15px 5px 0 0 #fff3c4,0 0 40px rgba(255,243,196,.45)}
+  #music{top:14px;right:14px;bottom:auto;width:44px;height:44px;font-size:18px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chips button{flex:none}
+  .btxt{min-height:0}
 }
 @media (prefers-reduced-motion:reduce){body::before{animation:none}}
 </style>
@@ -823,7 +828,8 @@ const ORDER=['hero','cake','balloons','gallery','wall','reasons','letter','final
 let curSec='hero',voiceOn=false,avTalk=0,avJump=0,avReady=false;
 function guideSay(key){const m=GUIDE[key];if(!m)return;const b=$('#bubble'),tx=$('#btxt');b.classList.add('show');b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');
   tx.textContent='';let i=0;clearInterval(guideSay.iv);guideSay.iv=setInterval(()=>{tx.textContent=m.t.slice(0,++i);if(i>=m.t.length)clearInterval(guideSay.iv)},16);
-  avTalk=Math.min(6,m.t.length*.04);if(voiceOn)speak(m.say)}
+  avTalk=Math.min(6,m.t.length*.04);if(voiceOn)speak(m.say);
+  clearTimeout(guideSay.hide);if(isMobile)guideSay.hide=setTimeout(()=>b.classList.remove('show'),7000)}
 function speak(s){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.lang='en-IN';u.rate=1;u.pitch=1.25;const vs=speechSynthesis.getVoices();const v=vs.find(v=>/en-IN/i.test(v.lang))||vs.find(v=>/female|zira|samantha|aria/i.test(v.name))||vs.find(v=>/^en/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
 new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting){const id=e.target.id;if(id!==curSec){curSec=id;if(unlocked)guideSay(id)}}}),{threshold:.3}).observe($('#hero'));
 ORDER.forEach(id=>{if(id!=='hero')new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting&&id!==curSec){curSec=id;if(unlocked)guideSay(id)}}),{threshold:isMobile?.2:.3}).observe($('#'+id))});
