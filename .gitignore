@@ -1,0 +1,3 @@
+# debugging/test copies, not part of the site
+_test_*.html
+_frame_*.html
